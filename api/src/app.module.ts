@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { MailerModule, MailerService } from '@nestjs-modules/mailer';
 const CONNECTION_NAME = 'default';
 
 @Module({
@@ -22,6 +23,15 @@ const CONNECTION_NAME = 'default';
         synchronize: true,
       }),
       inject: [ConfigService],
+    }),
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.EMAIL_HOST,
+        auth: {
+          user: process.env.EMAIL_USERNAME,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      },
     }),
     UserModule,
     AuthModule,
