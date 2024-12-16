@@ -38,13 +38,13 @@ export class UserService {
     return user;
   }
 
-  async getAllUsers() {
-    const users = await this.userRepo.find({
-      relations: ['institution', 'roles'],
-    });
+  async getAllUsersCount() {
+    const users = await this.userRepo.count();
+
     if (!users) {
       return;
     }
+
     return users;
   }
 

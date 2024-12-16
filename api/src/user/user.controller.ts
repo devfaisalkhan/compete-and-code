@@ -10,7 +10,9 @@ export class UserController {
   
   constructor(
     private config: ConfigService,
-    private authSvc: AuthService
+    private authSvc: AuthService,
+    private userSvc: UserService
+
   ) {}
 
   @Post('sendMail')
@@ -24,11 +26,11 @@ export class UserController {
   }
 
 
-  // @Get('getAllUsers')
-  // async getALlUsers() {
-  //   const users = await this.userSvc.getAllUsers();
-  //   return users;
-  // }
+  @Get('getAllUsersCount')
+  async getAllUsersCount() {
+    const users = await this.userSvc.getAllUsersCount();
+    return users;
+  }
 
   // @Get('getCurrentUser')
   // async getCurrentUser(@Request() req, @Query('id') id: number) {
