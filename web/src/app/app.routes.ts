@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { ADMIN_ROUTES } from './admin/admin.routes';
 
 export const routes: Routes = [
     {
@@ -15,13 +16,7 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/register/register.component').then(c => c.RegisterComponent)
     },
     {
-        path: 'admin',
-        children: [
-            {
-                path: 'dashboard',
-                loadComponent: () => import('./admin/dashboard/dashboard.component').then(c => c.DashboardComponent)
-            }
-        ]
-        
+        path: '',
+        children: ADMIN_ROUTES,
     },
 ];
