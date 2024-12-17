@@ -1,11 +1,13 @@
 import { BadRequestException, ConflictException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IResponse } from 'src/shared/shared.model';
+import { EPermission, IResponse } from 'src/shared/shared.model';
 import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import * as argon from 'argon2';
 import { MailerService } from '@nestjs-modules/mailer';
+import { RegisterUserDto } from 'src/user/dto/create-user.dto';
+import { IRole } from 'src/user/user.model';
 
 @Injectable()
 export class AuthService {
@@ -18,61 +20,44 @@ export class AuthService {
         
     }
 
-    async register(data: any): Promise<IResponse<any>> {
-        let result = {
-          userStatus: null,
-          alreadyExist: false,
-          alreadyRegisteredWithNormalAuth: false,
-          mobileRequired: true,
-          mobileVerified: false,
-          emailVerified: true,
-        };
+    async register(data: RegisterUserDto): Promise<IResponse<any>> {
+        const isUserFound = await this.userSvc.getUserByEmail(data.email);
     
-    
-        let existingUser = await this.userSvc.getUserByEmail(data.email);
-    
-    
-        let newOrUpdated: any = Object.assign({}, data);
-    
-        if (newOrUpdated.id) {
-          const user = await this.userSvc.getUserByEmail(data.email);
-          if (!user) {
-            return {
-              status: false,
-              message: 'User not found',
-            };
-          }
-    
-          newOrUpdated.name = data.name;
-          // newOrUpdated.institution = {...institution};
-    
-          await this.userRepo.save(newOrUpdated, { reload: true });
-    
-          return {
-            status: true,
-            message: 'User updated successfully',
-            data: newOrUpdated,
-          };
-        }
-    
-      
-        const user = await this.userSvc.getUserByEmail(newOrUpdated.email);
-    
-        if (user) {
+        if (isUserFound) {
           throw new ConflictException({
             alreadyExist: HttpStatus.CONFLICT,
             message: 'User already exists.'
           });
         }
     
-        let password = newOrUpdated.password;
+        let password = data.password;
         password = password.toString();
     
         const hashPassword = await argon.hash(password);
-        newOrUpdated.password = hashPassword;
-    
-        await this.userRepo.save<User>(newOrUpdated);
-    
+        data.password = hashPassword;
+        const role: IRole = {
+            id: '2', 
+            name: 'user',
+            description: 'simple',
+            permissions: [
+              EPermission.CREATE,
+              EPermission.READ,
+              EPermission.UPDATE,
+              EPermission.DELETE,
+            ], 
+        };
+        
+        if(!data.roles) {
+          data.roles = role;
+        }
+        
+        const user = this.userRepo.create({
+          ...data,
+          roles: data.roles,
+        });
+        
+        await this.userRepo.save<User>(user);
+
         return {
           status: HttpStatus.OK,
           message: 'User registered successfully',
