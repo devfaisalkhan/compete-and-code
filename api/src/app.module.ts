@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { MailerModule, MailerService } from '@nestjs-modules/mailer';
+import { SeedDataMiddleware } from './shared/middleware/seed-data.middleware';
 const CONNECTION_NAME = 'default';
 
 @Module({
@@ -21,6 +22,7 @@ const CONNECTION_NAME = 'default';
         database: configService.get('DATABASE_LOCATION'),
         autoLoadEntities: true,
         synchronize: true,
+        logging: true
       }),
       inject: [ConfigService],
     }),
@@ -39,4 +41,9 @@ const CONNECTION_NAME = 'default';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+
+  async configure(consumer: MiddlewareConsumer) {
+    consumer.apply(SeedDataMiddleware).forRoutes('/');
+  }
+}
