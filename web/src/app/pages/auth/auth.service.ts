@@ -23,4 +23,5 @@ export class AuthService  {
   getAllUsersCount(): Observable<number> {
     return this.http.get<any>(`${AppConstant.BASE_API_URL}/user/getAllUsersCount`);
   }
+
 }

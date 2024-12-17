@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ComponentsWithFormsModule } from '../../components/components-with-forms.module';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { HttpStatus } from '../../universal/shared.model';
 import { HelperService } from '../../universal/helper.service';
@@ -19,30 +19,57 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authSvc: AuthService,
-    private helperSvc: HelperService
+    private helperSvc: HelperService,
+    private router: Router
   ) {
     this.loginForm = this.fb.group({
-      email: ['testing@', [Validators.required, Validators.email]],
+      email: ['dev.faisalK@gmail.com', [Validators.required, Validators.email]],
       password: ['password', Validators.required]
     });
   }
 
-  onLogin(data: any) {
-    this.helperSvc.presentLoader("Logging In");
-      this.authSvc.login(data).subscribe(
-        (resp) => {
-          this.helperSvc.dismissLoader();
+  // async onLogin(data: any) {
+  //   this.helperSvc.presentLoader("Logging In");
+  //   this.authSvc.login(data).subscribe(
+  //     (resp) =>  {
+  //       this.helperSvc.dismissLoader();
 
-          if(resp.status == HttpStatus.OK) {
-            this.helperSvc.presentAlert(resp.message, 'success')
-          }
-        },
-        (error) => {
-          this.helperSvc.dismissLoader();
+  //       if(resp.status == HttpStatus.OK) {
+  //         await this.router.navigate(['/admin/dashboard']);
+  //       }
+  //     },
+  //     (error) => {
+  //       this.helperSvc.dismissLoader();
 
-          this.helperSvc.presentAlert('User not found', 'error')
+  //       this.helperSvc.presentAlert('User not found', 'error')
 
-        }
-      ) 
+  //     }
+  //   ) 
+  // }
+  
+  async onLogin(data: any) {
+    try {
+      // Show loader
+      this.helperSvc.presentLoader("Logging In");
+      // Convert the observable to a promise and await its response
+      const resp = await this.authSvc.login(data).toPromise();
+  
+      // Handle the response
+      if (resp?.status === HttpStatus.OK) {
+        localStorage.setItem('user', JSON.stringify(resp.data))   
+
+        await this.router.navigate(['/admin/dashboard']);
+
+      } else {
+        this.helperSvc.presentAlert('User not found', 'error');
+      }
+  
+      this.helperSvc.dismissLoader();
+    } catch (error) { 
+    } finally {
+      this.helperSvc.dismissLoader();
+
+    }
   }
+  
 }

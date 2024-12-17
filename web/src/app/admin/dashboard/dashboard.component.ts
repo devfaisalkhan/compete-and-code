@@ -5,6 +5,7 @@ import { MainNavbarComponent } from '../components/main-navbar/main-navbar.compo
 import { MainSidebarComponent } from '../components/main-sidebar/main-sidebar.component';
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from '../../pages/auth/auth.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,13 +16,17 @@ import { AuthService } from '../../pages/auth/auth.service';
 })
 export class DashboardComponent {
   users = 0;
-
-  constructor(private authSvc: AuthService) {
+  title!: string;
+  constructor(
+    private authSvc: AuthService,
+    private titleSvc: Title
+  ) {
     
   }
 
   ngOnInit() {
     this.getAllUsersCount();
+    this.getPageTitle();    
   }
 
   getAllUsersCount() {
@@ -32,5 +37,9 @@ export class DashboardComponent {
       error: (err) => {
       }
     });
+  }
+
+  getPageTitle() {
+    this.title = this.titleSvc.getTitle();
   }
 }

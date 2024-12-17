@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ComponentsWithFormsModule } from '../../components/components-with-forms.module';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { appConfig } from '../../app.config';
 import { AppConstant } from '../../universal/app-constant';
 import { AuthService } from '../auth/auth.service';
@@ -39,12 +39,14 @@ export class RegisterComponent {
            this.helperSvc.dismissLoader();
           if(resp.status == HttpStatus.OK) {
             this.helperSvc.presentAlert(resp.message, 'success')
+          } else {
+            this.helperSvc.presentAlert(resp.message, 'info')
           }
         },
-        (error) => {
+        (error: HttpErrorResponse) => {
           this.helperSvc.dismissLoader();
-
-          this.helperSvc.presentAlert('User already exist', 'warning')
+          const errorMessage = error.error?.message || 'An unknown error occurred';
+          this.helperSvc.presentAlert(errorMessage , 'error')
         }
       )
   }
