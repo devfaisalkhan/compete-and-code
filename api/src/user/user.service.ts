@@ -19,7 +19,7 @@ export class UserService {
     const user = await this.userRepo.findOne({
       where: { email: email }
     });
-
+    
     if (!user) {
       return null;
     }
@@ -39,13 +39,7 @@ export class UserService {
   }
 
   async getAllUsersCount() {
-    const users = await this.userRepo.count();
-
-    if (!users) {
-      return;
-    }
-
-    return users;
+    return this.userRepo.count();
   }
 
  

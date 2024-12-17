@@ -1,9 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from 'src/auth/auth.service';
+import { RegisterUserDto } from './dto/create-user.dto';
 
 @Controller(`user`)
 export class UserController {
@@ -69,7 +68,7 @@ export class UserController {
   }
 
   @Post('register')
-  async register(@Body() args: any) {
+  async register(@Body() args: RegisterUserDto) {
     return this.authSvc.register(args);
   }
 
