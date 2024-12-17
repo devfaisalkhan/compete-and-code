@@ -67,4 +67,4 @@ Follow the steps below to set up the project locally:
 
 #### 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/compete-adn-code.git
+git clone https://github.com/devfaisalkhan/compete-adn-code.git
