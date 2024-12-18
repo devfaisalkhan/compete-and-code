@@ -20,7 +20,7 @@ This project was originally used in a coding competition, and it's designed for 
 
 ## About
 
-**Compete-ADN Code** is a platform for managing user authentication, profile management, and administrative tasks. It uses **Angular** for a dynamic, client-side experience and **AdminLTE** for an attractive, responsive admin panel. The backend, built with **NestJS**, uses **TypeORM** to interact with a database. The project supports user registration and login via **JWT tokens**, ensuring secure authentication.
+**Compete-and-Code** is a platform for managing user authentication, profile management, and administrative tasks. It uses **Angular** for a dynamic, client-side experience and **AdminLTE** for an attractive, responsive admin panel. The backend, built with **NestJS**, uses **TypeORM** to interact with a database. The project supports user registration and login via **JWT tokens**, ensuring secure authentication.
 
 ---
 
