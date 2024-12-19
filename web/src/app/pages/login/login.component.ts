@@ -57,7 +57,9 @@ export class LoginComponent {
       // Handle the response
       if (resp?.status === HttpStatus.OK) {
         localStorage.setItem('user', JSON.stringify(resp.data))   
-
+        localStorage.setItem('access_token', resp?.access_token as any)   
+        localStorage.setItem('refresh_token', resp.refresh_token as any)   
+        
         await this.router.navigate(['/admin/dashboard']);
 
       } else {
@@ -70,6 +72,19 @@ export class LoginComponent {
       this.helperSvc.dismissLoader();
 
     }
+  }
+
+
+  generateRandomPassword() {
+    const length = Math.floor(Math.random() * (12 - 8 + 1)) + 8;  // Random length between 8 and 12
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let password = '';
+
+    for (let i = 0; i < length; i++) {
+        password += characters[Math.floor(Math.random() * characters.length)];
+    }
+
+    return password;
   }
   
 }
