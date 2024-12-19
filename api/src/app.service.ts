@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 export class AppService {
   constructor() {}
   
-  getHello(): string {
-    return 'Hello World!';
+  getHello(data): string {
+    return data;
   }
 }

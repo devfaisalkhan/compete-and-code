@@ -8,7 +8,7 @@ import { AppConstant } from './shared/app.constant';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configSvc = app.get(ConfigService);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({forbidNonWhitelisted: true}));
   app.enableCors();
   app.setGlobalPrefix(AppConstant.ROUTE_PREFIX);
 

@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EPermission, IResponse } from 'src/shared/shared.model';
 import { User } from 'src/user/entities/user.entity';
@@ -8,19 +8,23 @@ import * as argon from 'argon2';
 import { MailerService } from '@nestjs-modules/mailer';
 import { RegisterUserDto } from 'src/user/dto/create-user.dto';
 import { IRole } from 'src/user/user.model';
+import { JwtPayload } from './types';
+import { JwtService } from '@nestjs/jwt';
+import { AppConstant } from 'src/shared/app.constant';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User)
-            private userRepo: Repository<User>,
+        private userRepo: Repository<User>,
         private userSvc: UserService,
-        private readonly mailService: MailerService
+        private readonly mailService: MailerService,
+        private jwtService: JwtService,
     ) {
         
     }
 
-    async register(data: RegisterUserDto): Promise<IResponse<any>> {
+    async register(data: any): Promise<IResponse<any>> {
         const isUserFound = await this.userSvc.getUserByEmail(data.email);
     
         if (isUserFound) {
@@ -29,7 +33,7 @@ export class AuthService {
             message: 'User already exists.'
           });
         }
-    
+        
         let password = data.password;
         password = password.toString();
     
@@ -37,7 +41,7 @@ export class AuthService {
         data.password = hashPassword;
         const role: IRole = {
             id: '2', 
-            name: 'user',
+            name: data.roles,
             description: 'simple',
             permissions: [
               EPermission.CREATE,
@@ -46,15 +50,17 @@ export class AuthService {
               EPermission.DELETE,
             ], 
         };
-        
+
         if(!data.roles) {
           data.roles = role;
         }
+
         
         const user = this.userRepo.create({
           ...data,
           roles: data.roles,
         });
+        console.log(user);
         
         await this.userRepo.save<User>(user);
 
@@ -65,39 +71,57 @@ export class AuthService {
     }
     
     async login(params: any): Promise<IResponse<any>> {
-        const user = await this.vaildateUserByEmail({
-          email: params.email,
-          password: params.password,
-        });
-    
-        // const payLoad: JwtPayload = {
-        //   userId: user.id,
-        //   email: user.email,
-        // };
-    
-        return {
-          // access_token: this.generateAccessToken(payLoad),
-          // refresh_token: this.generateRefreshToken(payLoad),
-          data: user,
-          status: HttpStatus.OK,
-        };
+      const payLoad: JwtPayload = {
+        userId: params.id,
+        email: params.email,
+      };
+  
+      return {
+        access_token: await this.generateAccessToken(payLoad),
+        refresh_token: await this.generateRefreshToken(payLoad),
+        data: params,
+        status: HttpStatus.OK,
+      };
+    }
+
+    async delete(data): Promise<IResponse<any>> {
+      const user = await this.vaildateUserByEmail(data);
+        
+      if(user) {
+        await this.userRepo.delete(data.email);
+      }
+
+      return {
+        status: HttpStatus.OK,
+        message: 'User Deleted successfully',
+      };
     }
 
     async vaildateUserByEmail(args: { email; password }) {
-        const user = await this.userSvc.getUserByEmail(args.email);
-        if (!user) {
-            throw new BadRequestException({ userNotFound: HttpStatus.NOT_FOUND });
-        }
+      const user = await this.userSvc.getUserByEmail(args.email);
 
-        const match = await argon.verify(user.password, args.password);
+      if (!user) {
+        throw new UnauthorizedException({ userNotFound: HttpStatus.NOT_FOUND });
+      }
+      
+      const match = await argon.verify(user.password, args.password);
 
-        if (!match) {
-            return null;
-        }
+      if (!match) {
+        return null;
+      }
 
-        return user;
+      return user;
     }
 
+    generateAccessToken(payLoad: JwtPayload) {
+      return this.jwtService.sign(payLoad);
+    }
+  
+    generateRefreshToken(payLoad: JwtPayload) {
+      return this.jwtService.sign(payLoad);
+    }
+
+    
     async _sendMail(to, subject, template?, context?) {
         let result: {
           response;
