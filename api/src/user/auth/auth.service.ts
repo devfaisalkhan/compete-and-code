@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EPermission, IResponse } from 'src/shared/shared.model';
 import { User } from 'src/user/entities/user.entity';
@@ -11,6 +11,7 @@ import { IRole } from 'src/user/user.model';
 import { JwtPayload } from './types';
 import { JwtService } from '@nestjs/jwt';
 import { AppConstant } from 'src/shared/app.constant';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,7 @@ export class AuthService {
         private userSvc: UserService,
         private readonly mailService: MailerService,
         private jwtService: JwtService,
+        private configSvc: ConfigService
     ) {
         
     }
@@ -60,7 +62,6 @@ export class AuthService {
           ...data,
           roles: data.roles,
         });
-        console.log(user);
         
         await this.userRepo.save<User>(user);
 
@@ -85,11 +86,17 @@ export class AuthService {
     }
 
     async delete(data): Promise<IResponse<any>> {
-      const user = await this.vaildateUserByEmail(data);
-        
-      if(user) {
-        await this.userRepo.delete(data.email);
+      const user = await this.userRepo.findOne({where: {id: data.id}});
+      
+      if(!user) {
+        throw new NotFoundException();
       }
+
+      const resp = await this.userRepo.delete({id: data.id});
+    
+      if(resp.affected === 0) {
+        throw new BadRequestException();
+      } 
 
       return {
         status: HttpStatus.OK,
@@ -99,18 +106,43 @@ export class AuthService {
 
     async vaildateUserByEmail(args: { email; password }) {
       const user = await this.userSvc.getUserByEmail(args.email);
-
+      
       if (!user) {
-        throw new UnauthorizedException({ userNotFound: HttpStatus.NOT_FOUND });
+        throw new NotFoundException();
       }
       
       const match = await argon.verify(user.password, args.password);
-
+      console.log(args.email);
+      
       if (!match) {
-        return null;
+        throw new UnauthorizedException();
       }
 
       return user;
+    }
+
+    async getNewAccessToken(refreshToken: string) {
+      try {
+        const payload = await this.jwtService.verifyAsync(refreshToken, {
+          secret: this.configSvc.get<string>('refreshTokenSecret'),
+        });
+        
+        const accessToken = await this.generateAccessToken({
+          userId: payload.userId,
+          email: payload.email,
+        });
+        const refresh_Token = await this.generateRefreshToken({
+          userId: payload.userId,
+          email: payload.email,
+        });
+  
+        return {
+          access_token: accessToken,
+          refresh_token: refresh_Token,
+        };
+      } catch (error) {
+        throw new UnauthorizedException();
+      }
     }
 
     generateAccessToken(payLoad: JwtPayload) {
@@ -118,7 +150,10 @@ export class AuthService {
     }
   
     generateRefreshToken(payLoad: JwtPayload) {
-      return this.jwtService.sign(payLoad);
+      return this.jwtService.sign(payLoad, {
+        secret: this.configSvc.get<string>('refreshTokenSecret'),
+        expiresIn: AppConstant.DEFAULT_JWT_REFRESH_TOKEN_EXPIRATION
+      });
     }
 
     

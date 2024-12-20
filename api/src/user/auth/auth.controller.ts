@@ -23,4 +23,9 @@ export class AuthController {
   async register(@Body() args: any) {
     return this.authSvc.register(args);
   }
+
+  @Post('getNewAccessToken')
+  async getNewAccessToken(@Body() args: any) {
+    return this.authSvc.getNewAccessToken(args.refreshToken);
+  }
 }

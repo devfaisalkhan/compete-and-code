@@ -15,9 +15,19 @@ export const ADMIN_ROUTES: Routes = [
                 title: 'Dashboard'
             },
             {
-                path: 'users-liting',
+                path: 'users-listing',
                 loadComponent: () => import('./users-listing/users-listing.component').then(c => c.UsersListingComponent),
                 title: 'Users liting'
+            },
+            {
+                path: 'add-user',
+                loadComponent: () => import('./add-user/add-user.component').then(c => c.AddUserComponent),
+                title: 'add-user'
+            },
+            {
+                path: 'add-course',
+                loadComponent: () => import('./courses/courses.component').then(c => c.CoursesComponent),
+                title: 'add course'
             }
         ]
         

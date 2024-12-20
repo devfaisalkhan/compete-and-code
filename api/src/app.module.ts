@@ -4,16 +4,12 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
 import { MailerModule, MailerService } from '@nestjs-modules/mailer';
 import { SeedDataMiddleware } from './shared/middleware/seed-data.middleware';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './auth/guards/auth.guard';
 import { CoursesModule } from './courses/courses.module';
 import appConfig from './config/app.config';
-import { JwtModule } from '@nestjs/jwt';
-import { AppConstant } from './shared/app.constant';
-import { JwtStrategy } from './auth/strategies/jwt.strategy';
+import { AuthModule } from './user/auth/auth.module';
+import { JwtStrategy } from './user/auth/strategies/jwt.strategy';
 const CONNECTION_NAME = 'default';
 
 @Module({

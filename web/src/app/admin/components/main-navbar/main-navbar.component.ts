@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Route, Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-navbar-haeder',
@@ -9,5 +9,15 @@ import { RouterLink } from '@angular/router';
   styleUrl: './main-navbar.component.scss'
 })
 export class MainNavbarComponent {
+  constructor(
+    private router: Router
+  ) {
+    
+  }
 
+  async onLogout() {
+    localStorage.clear();
+    await this.router.navigate(['/login'])
+
+  }
 }

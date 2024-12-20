@@ -18,6 +18,7 @@ import { HttpStatus } from '../../universal/shared.model';
 })
 export class RegisterComponent {
   registerForm: FormGroup;
+  showPassword: boolean= false;
 
   constructor(
     private fb: FormBuilder,
@@ -28,7 +29,8 @@ export class RegisterComponent {
     this.registerForm = this.fb.group({
       name: ['testing', Validators.required],
       email: ['testing@1.com', [Validators.required, Validators.email]],
-      password: ['password', Validators.required]
+      password: [this.generateRandomPassword(), Validators.required],
+      roles: ['', Validators.required]
     });
   }
 
@@ -49,5 +51,21 @@ export class RegisterComponent {
           this.helperSvc.presentAlert(errorMessage , 'error')
         }
       )
+  }
+
+  generateRandomPassword() {
+    const length = Math.floor(Math.random() * (12 - 8 + 1)) + 8;  // Random length between 8 and 12
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let password = '';
+
+    for (let i = 0; i < length; i++) {
+        password += characters[Math.floor(Math.random() * characters.length)];
+    }
+
+    return password;
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 }

@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { ConfigService } from '@nestjs/config';
 import { MailerService } from '@nestjs-modules/mailer';
+import { promises } from 'dns';
+import { IResponse } from 'src/shared/shared.model';
 
 @Injectable()
 export class UserService {
@@ -42,21 +44,18 @@ export class UserService {
     return this.userRepo.count();
   }
 
- 
+  async getAllUsers():  Promise<IResponse<any>> {
+    const users = await this.userRepo.find();
+    
+    if(!users) {
+      return null
+    }
 
-  // generateAccessToken(payLoad: JwtPayload) {
-  //   return this.jwtService.sign(payLoad, {
-  //     expiresIn: AppConstant.DEFAULT_JWT_TOKEN_EXPIRATION,
-  //     secret: this.config.get<string>('ACCESS_TOKEN_KEY'),
-  //   });
-  // }
-
-  // generateRefreshToken(payLoad: JwtPayload) {
-  //   return this.jwtService.sign(payLoad, {
-  //     expiresIn: AppConstant.DEFAULT_JWT_REFRESH_TOKEN_EXPIRATION,
-  //     secret: this.config.get<string>('REFRESH_TOKEN_SECRET'),
-  //   });
-  // }
+    return {
+      data: users,
+      status: HttpStatus.OK
+    } ;
+  }
 
   // async changeRole(data: IUser, role: IRole) {
   //   let user = await this.getUserByEmail(data.email);

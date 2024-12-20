@@ -1,17 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request, UnauthorizedException } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ConfigService } from '@nestjs/config';
-import { AuthService } from 'src/auth/auth.service';
-import { RegisterUserDto } from './dto/create-user.dto';
+import { AuthService } from './auth/auth.service';
+import { LocalAuthGuard } from './auth/guards/local-auth.guard';
+import { Public } from './auth/decorators/public.decorator';
 
 @Controller(`user`)
 export class UserController {
-  
   constructor(
-    private config: ConfigService,
     private authSvc: AuthService,
     private userSvc: UserService
-
   ) {}
 
   @Post('sendMail')
@@ -24,11 +21,15 @@ export class UserController {
     }
   }
 
-
   @Get('getAllUsersCount')
   async getAllUsersCount() {
     const users = await this.userSvc.getAllUsersCount();
     return users;
+  }
+
+  @Get('getAllUsers')
+  async getAllUsers() {
+    return this.userSvc.getAllUsers();
   }
 
   // @Get('getCurrentUser')
@@ -37,40 +38,19 @@ export class UserController {
   //   return user;
   // }
 
-  // @Post('generateAccessToken')
-  // async generateAccessToken(@Body() args) {
-  //   try {
-  //     const payload = await this.jwtSvc.verifyAsync(args.args, {
-  //       secret: this.config.get<string>('REFRESH_TOKEN_SECRET'),
-  //     });
+ 
 
-  //     const accessToken = await this.tokenSvc.generateAccessToken({
-  //       userId: payload.userId,
-  //       email: payload.email,
-  //     });
-  //     const refresh_Token = await this.tokenSvc.generateRefreshToken({
-  //       userId: payload.userId,
-  //       email: payload.email,
-  //     });
-
-  //     return {
-  //       access_token: accessToken,
-  //       refresh_token: refresh_Token,
-  //     };
-  //   } catch (error) {
-  //     throw new UnauthorizedException();
-  //   }
-  // }
-
-  @Post('authenticate')
-  async login(@Body() args) {
-    return this.authSvc.login(args);
+  @Post('delete')
+  async delete(@Body() args) {
+    return this.authSvc.delete(args);
   }
 
-  @Post('register')
-  async register(@Body() args: RegisterUserDto) {
-    return this.authSvc.register(args);
+  @UseGuards(LocalAuthGuard)
+  @Post('logout')
+  async logout(@Request() req) {
+    return req.logout();
   }
+ 
 
   // @Post('updateTourStatus')
   // async updateTourStatus(@Body() args: IUser) {

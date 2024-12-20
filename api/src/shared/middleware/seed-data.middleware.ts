@@ -1,10 +1,10 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { permission } from 'process';
-import { AuthService } from 'src/auth/auth.service';
 import { IRole } from 'src/user/user.model';
 import { UserService } from 'src/user/user.service';
 import { EPermission } from '../shared.model';
+import { AuthService } from 'src/user/auth/auth.service';
 
 @Injectable()
 export class SeedDataMiddleware implements NestMiddleware {
@@ -24,13 +24,13 @@ export class SeedDataMiddleware implements NestMiddleware {
         name: 'admin',
         description: 'Administrator role with full access to the system',
         permissions: [
-            EPermission.CREATE,
-            EPermission.READ,
-            EPermission.UPDATE,
-            EPermission.DELETE,
-            EPermission.MANAGE_USERS,
-            EPermission.VIEW_REPORTS,
-            EPermission.CONFIGURE_SETTINGS,
+          EPermission.CREATE,
+          EPermission.READ,
+          EPermission.UPDATE,
+          EPermission.DELETE,
+          EPermission.MANAGE_USERS,
+          EPermission.VIEW_REPORTS,
+          EPermission.CONFIGURE_SETTINGS,
         ], 
     };
 

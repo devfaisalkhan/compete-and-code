@@ -18,13 +18,38 @@
               Email is required and must be valid.
             </div>
           </div>
-          <div class="mb-3">
+
+
+          <div class="form-group">
             <label for="password" class="form-label">Password</label>
-            <input type="password" id="password" class="form-control" formControlName="password" placeholder="Choose a password">
+            <div class="input-group" style="flex-wrap: nowrap !important">
+              <input
+              [type]="showPassword ? 'text' : 'password'" 
+                id="password" class="form-control" formControlName="password" placeholder="Choose a password">
+              <div class="input-group-append">
+                <span class="icon-container" (click)="togglePasswordVisibility()">
+                  <i [ngClass]="{ 'fas fa-eye-slash': !showPassword }"></i>
+                  <i [ngClass]="{ 'fas fa-eye': showPassword }"> </i>
+                </span>
+              </div>
+            </div>
+
             <div class="text-danger" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
               Password is required.
             </div>
           </div>
+
+          <div class="mb-3">
+            <label for="role" class="form-label">Role</label>
+            <select formControlName="roles" class="form-select" id="role" required>
+              <option value="">Select role</option>
+              <option value="admin">Admin</option>
+              <option value="editor">Editor</option>
+              <option value="viewer">Viewer</option>
+              <option value="teacher">Teacher</option>
+            </select>
+          </div>
+          
           <!-- <div class="mb-3">
             <label for="confirmPassword" class="form-label">Confirm Password</label>
             <input type="password" id="confirmPassword" class="form-control" formControlName="confirmPassword" placeholder="Confirm your password">
