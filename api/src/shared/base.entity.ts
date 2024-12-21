@@ -5,6 +5,7 @@ import { Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Del
 @Entity()
 export abstract class Base {
   @PrimaryGeneratedColumn('uuid')
+  @Exclude()
   id: UUID; 
 
   @CreateDateColumn()
