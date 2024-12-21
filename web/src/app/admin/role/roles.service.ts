@@ -20,7 +20,7 @@ export class RolesService {
   ]);
 
   getRoles() {
-    return this.http.get<any>(`${AppConstant.BASE_API_URL}/role/findAll`);
+    return this.http.get<any>(`${AppConstant.BASE_API_URL}/role/getAllRoles`);
   }
 
   getRoleById(id: string) {

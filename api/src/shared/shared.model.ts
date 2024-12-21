@@ -6,11 +6,8 @@ export interface IResponse<T> {
   refresh_token?
 }
 export enum EPermission {
-  CREATE = 'CREATE',
-  READ = 'READ',
-  UPDATE = 'UPDATE',
-  DELETE = 'DELETE',
-  MANAGE_USERS = 'MANAGE_USERS',
-  VIEW_REPORTS = 'VIEW_REPORTS',
-  CONFIGURE_SETTINGS = 'CONFIGURE_SETTINGS',
+  CREATE = 'create',
+  READ = 'read',
+  UPDATE = 'update',
+  DELETE = 'delete',
 }

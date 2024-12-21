@@ -20,6 +20,7 @@ export class UserService {
   async getUserByEmail(email): Promise<any> {
     const user = await this.userRepo.findOne({
       where: { email },
+      relations: ['roles']
     });
     
     if (!user) {

@@ -5,22 +5,24 @@ import { IRole } from 'src/user/user.model';
 import { UserService } from 'src/user/user.service';
 import { EPermission } from '../shared.model';
 import { AuthService } from 'src/user/auth/auth.service';
+import { RoleService } from 'src/role/role.service';
+import { log } from 'console';
 
 @Injectable()
 export class SeedDataMiddleware implements NestMiddleware {
   constructor(
     private userSvc: UserService,
-    private authSvc: AuthService,
-
-    // private roleSvc: RoleService,
+    private authSvc: AuthService, 
+    private roleSvc: RoleService
   ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
     const { url } = req;
-    let users = await this.userSvc.getAllUsersCount();
+    const usersCount = await this.userSvc.getAllUsersCount();
+    const rolesCount = await this.roleSvc.countAll();
 
-    const adminRole: IRole = {
-        id: '1', 
+    if (rolesCount === 0) {
+      const adminRole: IRole = {
         name: 'admin',
         description: 'Administrator role with full access to the system',
         permissions: [
@@ -28,20 +30,27 @@ export class SeedDataMiddleware implements NestMiddleware {
           EPermission.READ,
           EPermission.UPDATE,
           EPermission.DELETE,
-          EPermission.MANAGE_USERS,
-          EPermission.VIEW_REPORTS,
-          EPermission.CONFIGURE_SETTINGS,
         ], 
-    };
+      };
 
-    if (users == 0) {
+      await this.roleSvc.create(adminRole);
+    }
+
+    // Fetch roles after seeding
+    const roles = await this.roleSvc.findAndCount();
+    const [roleEntities, totalRoles] = roles;
+
+    if (totalRoles === 1 && usersCount === 0) {
+      const role = roleEntities[0]; 
       await this.authSvc.register({
         email: 'dev.faisalK@gmail.com',
         name: 'faisal khan',
         password: 'password',
-        roles: adminRole    
+        roles: [role], 
       });
     }
+
     next();
   }
 }
+

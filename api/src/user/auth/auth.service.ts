@@ -28,7 +28,7 @@ export class AuthService {
 
     async register(data: any): Promise<IResponse<any>> {
         const isUserFound = await this.userSvc.getUserByEmail(data.email);
-    
+      
         if (isUserFound) {
           throw new ConflictException({
             alreadyExist: HttpStatus.CONFLICT,
@@ -41,27 +41,8 @@ export class AuthService {
     
         const hashPassword = await argon.hash(password);
         data.password = hashPassword;
-        const role: IRole = {
-            id: '2', 
-            name: data.roles,
-            description: 'simple',
-            permissions: [
-              EPermission.CREATE,
-              EPermission.READ,
-              EPermission.UPDATE,
-              EPermission.DELETE,
-            ], 
-        };
-
-        if(!data.roles) {
-          data.roles = role;
-        }
-
         
-        const user = this.userRepo.create({
-          ...data,
-          roles: data.roles,
-        });
+        const user = this.userRepo.create(data);
         
         await this.userRepo.save<User>(user);
 
@@ -106,7 +87,7 @@ export class AuthService {
 
     async vaildateUserByEmail(args: { email; password }) {
       const user = await this.userSvc.getUserByEmail(args.email);
-      
+        
       if (!user) {
         throw new NotFoundException();
       }

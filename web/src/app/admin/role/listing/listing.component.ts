@@ -23,7 +23,9 @@ export class ListingComponent implements OnInit {
 
   private _getAllRoles() {
     this.roleSvc.getRoles().subscribe((res) => {
-      this.roles = res;
+      console.log(res);
+      
+      this.roles = res.data;
       console.log(this.roles);
     });
   }

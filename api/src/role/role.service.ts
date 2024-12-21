@@ -16,7 +16,6 @@ export class RoleService {
   }
 
   async create(createRoleDto: CreateRoleDto): Promise<IResponse<any>> {
-
    const role = await this.roleRepo.create(createRoleDto); 
 
    await this.roleRepo.save(role);
@@ -27,8 +26,25 @@ export class RoleService {
    }
   }
 
-  findAll() {
-    return this.roleRepo.find();
+  countAll() {
+    return this.roleRepo.count();
+  }
+
+  findAndCount() {
+    return this.roleRepo.findAndCount();
+  }
+
+  async getAllRoles(): Promise<IResponse<any>> {
+    const roles = await this.roleRepo.find();
+    
+    if(!roles) {
+      throw new NotFoundException('Roles not found');
+    }
+
+    return {
+      data: roles,
+      status: HttpStatus.OK
+    };
   }
 
   getRoleById(id: UUID) {

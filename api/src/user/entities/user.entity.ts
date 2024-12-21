@@ -1,7 +1,8 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 import { Base } from 'src/shared/base.entity';
 import { IRole } from '../user.model';
 import { Exclude } from 'class-transformer';
+import { Role } from './role.entity';
 
 @Entity()
 export class User extends Base {
@@ -15,8 +16,9 @@ export class User extends Base {
   @Exclude()
   password: string; 
 
-  @Column('json', { nullable: true })
-  roles: IRole;
+  @ManyToMany(() => Role, (role) => role.users)
+  @JoinTable({ name: 'user_roles' }) 
+  roles: Role[];
 
   @Column({ default: true }) 
   isActive: boolean;

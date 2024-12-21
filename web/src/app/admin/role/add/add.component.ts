@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ComponentsWithFormsModule } from '../../../components/components-with-forms.module';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import "select2";
 import { RolesService } from '../roles.service';
 import { ActivatedRoute } from '@angular/router';
 
@@ -36,7 +35,6 @@ export class AddComponent implements AfterViewInit, OnInit {
     this.route.paramMap.subscribe((params) => {
       this.roleId = <string>params.get('id');
       this.isEdit = !!this.roleId; // If ID exists, it's edit mode
-      console.log(this.roleId);
       
       if (this.roleId) {
         this.roleSvc.getRoleById(this.roleId).subscribe((role) => {
@@ -61,12 +59,14 @@ export class AddComponent implements AfterViewInit, OnInit {
     if(this.isEdit) {
       data.id = this.roleId;
       this.roleSvc.updateRole(data).subscribe(() => {
-        console.log('Role updated successfully');
+        this.formGroup.reset();
       });
       return;
     } else {
       this.roleSvc.addRole(data).subscribe(() => {
         console.log('Role added successfully');
+        this.formGroup.reset();
+
       });
     }
   

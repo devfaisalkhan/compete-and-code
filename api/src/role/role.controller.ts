@@ -13,9 +13,19 @@ export class RoleController {
     return this.roleService.create(createRoleDto);
   }
 
-  @Get('findAll')
-  findAll() {
-    return this.roleService.findAll();
+  @Get('countAll')
+  countAll() {
+    return this.roleService.countAll();
+  }
+
+  @Get('findAndCount')
+  findAndCount() {
+    return this.roleService.findAndCount();
+  }
+
+  @Get('getAllRoles')
+  getAllRoles() {
+    return this.roleService.getAllRoles();
   }
 
   @Get(':id')
