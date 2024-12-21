@@ -1,6 +1,7 @@
 import { Column, Entity } from 'typeorm';
 import { Base } from 'src/shared/base.entity';
 import { IRole } from '../user.model';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User extends Base {
@@ -11,6 +12,7 @@ export class User extends Base {
   email: string;
 
   @Column({ nullable: false })
+  @Exclude()
   password: string; 
 
   @Column('json', { nullable: true })

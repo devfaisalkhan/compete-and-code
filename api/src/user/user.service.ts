@@ -19,16 +19,13 @@ export class UserService {
 
   async getUserByEmail(email): Promise<any> {
     const user = await this.userRepo.findOne({
-      where: { email: email }
+      where: { email },
     });
     
     if (!user) {
       return null;
     }
-
-    return {
-      ...user,
-    };
+    return user;
   }
 
   async updateTourStatus(user: any) {

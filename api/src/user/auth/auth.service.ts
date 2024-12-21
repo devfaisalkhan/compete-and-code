@@ -112,7 +112,6 @@ export class AuthService {
       }
       
       const match = await argon.verify(user.password, args.password);
-      console.log(args.email);
       
       if (!match) {
         throw new UnauthorizedException();

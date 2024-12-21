@@ -1,6 +1,6 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Inject, ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, Inject, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppConstant } from './shared/app.constant';
@@ -9,8 +9,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configSvc = app.get(ConfigService);
   app.useGlobalPipes(new ValidationPipe({forbidNonWhitelisted: true}));
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  
   app.enableCors();
-  app.setGlobalPrefix(AppConstant.ROUTE_PREFIX);
+  app.setGlobalPrefix(AppConstant.ROUTE_PREFIX);  
 
   const config = new DocumentBuilder()
   .setTitle('Cats example')

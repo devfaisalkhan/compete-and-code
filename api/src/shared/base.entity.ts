@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { UUID } from "crypto";
 import { Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
 
@@ -7,9 +8,11 @@ export abstract class Base {
   id: UUID; 
 
   @CreateDateColumn()
+  @Exclude()
   createdAt: Date; 
 
   @UpdateDateColumn()
+  @Exclude()
   updatedAt: Date; 
 
   @DeleteDateColumn({ nullable: true })
