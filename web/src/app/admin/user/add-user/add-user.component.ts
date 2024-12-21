@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ComponentsWithFormsModule } from '../../components/components-with-forms.module';
+import { ComponentsWithFormsModule } from '../../../components/components-with-forms.module';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HelperService } from '../../universal/helper.service';
-import { AuthService } from '../../pages/auth/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { HttpStatus } from '../../universal/shared.model';
-import { roleGuard } from '../../pages/auth/role.guard';
+import { AuthService } from '../../../pages/auth/auth.service';
+import { HelperService } from '../../../universal/helper.service';
+import { HttpStatus } from '../../../universal/shared.model';
 
 @Component({
   selector: 'app-add-user',
@@ -18,19 +17,16 @@ export class AddUserComponent implements OnInit{
   formGroup: FormGroup;
   isUpdate: boolean = false;
   constructor(
-        private fb: FormBuilder,
-        private helperSvc: HelperService,
-            private authSvc: AuthService,
-        
-    
+    private fb: FormBuilder,
+    private helperSvc: HelperService,
+    private authSvc: AuthService,
   ) {
-        this.formGroup = this.fb.group({
-          email: ['dev.faisalK@gmail.com', [Validators.required, Validators.email]],
-          password: ['password', Validators.required],
-          name: ['password', Validators.required],
-          roles: ['password', Validators.required],
-        });
-    
+    this.formGroup = this.fb.group({
+      email: ['dev.faisalK@gmail.com', [Validators.required, Validators.email]],
+      password: ['password', Validators.required],
+      name: ['password', Validators.required],
+      roles: ['password', Validators.required],
+    });
   }
   ngOnInit(): void {
     // if (this.) {
@@ -42,7 +38,7 @@ export class AddUserComponent implements OnInit{
 
 
   onFormSubmitted(data: any) {
-         this.helperSvc.presentLoader("Registering user");
+    this.helperSvc.presentLoader("Registering user");
     this.authSvc.register(data).subscribe(
       (resp) => {
         this.helperSvc.dismissLoader();

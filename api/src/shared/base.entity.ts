@@ -5,7 +5,6 @@ import { Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Del
 @Entity()
 export abstract class Base {
   @PrimaryGeneratedColumn('uuid')
-  @Exclude()
   id: UUID; 
 
   @CreateDateColumn()
@@ -14,7 +13,7 @@ export abstract class Base {
 
   @UpdateDateColumn()
   @Exclude()
-  updatedAt: Date; 
+  updatedAt: Date;
 
   @DeleteDateColumn({ nullable: true })
   deletedAt?: Date;

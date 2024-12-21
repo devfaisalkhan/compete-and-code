@@ -94,6 +94,30 @@
             </ul>
           </li>
    
+          <li class="nav-item">
+            <a href="" class="nav-link">
+              <i class="nav-icon fas fa-user"></i>
+              <p>
+                Roles
+                <i class="fas fa-angle-left right"></i>
+                <!-- <span class="badge badge-info right">6</span> -->
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a [routerLink]="['/admin/add-roles']" class="nav-link">
+                  <!-- <i class="far fa-circle nav-icon"></i> -->
+                  <!-- <i class="fa fa-list"></i> -->
+                  <p> add role</p>
+                </a>
+                <a [routerLink]="['/admin/roles-listing']" class="nav-link">
+                  <!-- <i class="far fa-circle nav-icon"></i> -->
+                  <!-- <i class="fa fa-list"></i> -->
+                  <p> roles listing</p>
+                </a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

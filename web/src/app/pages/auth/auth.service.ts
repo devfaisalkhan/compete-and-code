@@ -9,7 +9,9 @@ import { IResponse } from '../../universal/shared.model';
 })
 export class AuthService  {
   
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient
+  ) {
   }
 
   register(data: any): Observable<IResponse<any>> {

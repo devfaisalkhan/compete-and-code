@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../pages/auth/auth.service';
-import { HttpStatus } from '../../universal/shared.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
-import { HelperService } from '../../universal/helper.service';
+import { AuthService } from '../../../pages/auth/auth.service';
+import { HelperService } from '../../../universal/helper.service';
+import { HttpStatus } from '../../../universal/shared.model';
 
 @Component({
   selector: 'app-users-listing',
@@ -20,13 +20,11 @@ export class UsersListingComponent implements OnInit {
   constructor(
     private authSvc: AuthService,
     private helperSvc: HelperService
-
-
   ) { 
   }
 
-   ngOnInit() {
-     this._getAllUsers();
+  ngOnInit() {
+    this._getAllUsers();
   }
   onUpdateUser() {
 

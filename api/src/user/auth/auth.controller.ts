@@ -8,7 +8,6 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 export class AuthController {
   constructor(
     private authSvc: AuthService,
-
   ) {}
 
   @Post('authenticate')
@@ -16,7 +15,6 @@ export class AuthController {
   async login(@Req() req) {
     return this.authSvc.login(req.user);
   }
-
 
   @Post('register')
   async register(@Body() args: any) {
