@@ -101,10 +101,18 @@ export class UsersListingComponent implements OnInit {
         (resp: any) => {
           if(resp.status == HttpStatus.OK) {
             this.users = resp.data;
-             this.users.forEach(user => {
-              this.permissions =  user.roles.permissions
+             this.users.forEach((user: any) => {
+              user.roles.forEach((role: any) => {
+                this.permissions = role.permissions;
+              });
+             
             });
-            console.log(this.permissions);
+
+            // this.permissions.forEach((permission: any) => {
+            //   console.log(permission)
+            // })
+
+            console.log(this.permissions[0]);
             
             // this.helperSvc.presentAlert(resp.message, 'success')
           } else {

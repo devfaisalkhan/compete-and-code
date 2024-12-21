@@ -23,9 +23,11 @@
               <td>{{ user.name }}</td>
               <td>{{ user.email }}</td>
               <td>
-                <!-- <span class="badge badge-light" style="margin: 0 4px;">
-                    {{user.roles.name }}
-                  </span> -->
+                @for (role of user.roles; track $index) {
+                  <span class="badge badge-light" style="margin: 0 4px;">
+                    {{role.name }}
+                  </span>
+                }
 
                   
                 <!-- @if (user.isEditingEnabled) {
@@ -38,9 +40,9 @@
               </td>
               <td>
                 @for (item of permissions; track $index) {
-                    <span class="badge badge-light permissions">
-                        {{item }}
-                      </span>
+                  <span class="badge badge-light permissions">
+                      {{item }}
+                  </span>
                 }
               </td>
               <!-- <td> -->

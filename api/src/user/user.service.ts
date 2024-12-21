@@ -43,7 +43,9 @@ export class UserService {
   }
 
   async getAllUsers():  Promise<IResponse<any>> {
-    const users = await this.userRepo.find();
+    const users = await this.userRepo.find({
+      relations: ['roles']
+    });
     
     if(!users) {
       return null
