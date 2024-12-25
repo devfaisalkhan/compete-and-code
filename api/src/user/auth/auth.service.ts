@@ -6,12 +6,12 @@ import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import * as argon from 'argon2';
 import { MailerService } from '@nestjs-modules/mailer';
-import { RegisterUserDto } from 'src/user/dto/create-user.dto';
-import { IRole } from 'src/user/user.model';
 import { JwtPayload } from './types';
 import { JwtService } from '@nestjs/jwt';
 import { AppConstant } from 'src/shared/app.constant';
 import { ConfigService } from '@nestjs/config';
+import { RoleService } from 'src/role/role.service';
+import { CreateUserDto } from '../dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -21,14 +21,16 @@ export class AuthService {
       private userSvc: UserService,
       private readonly mailService: MailerService,
       private jwtService: JwtService,
-      private configSvc: ConfigService
+      private configSvc: ConfigService,
+      private roleSvc: RoleService
+
     ) {
         
     }
 
-    async register(data: any): Promise<IResponse<any>> {
+    async register(data: CreateUserDto): Promise<IResponse<any>> {
         const isUserFound = await this.userSvc.getUserByEmail(data.email);
-      
+          
         if (isUserFound) {
           throw new ConflictException({
             alreadyExist: HttpStatus.CONFLICT,
@@ -41,11 +43,15 @@ export class AuthService {
     
         const hashPassword = await argon.hash(password);
         data.password = hashPassword;
-        
-        const user = this.userRepo.create(data);
-        
-        await this.userRepo.save<User>(user);
 
+        if(!data.roles) {
+          const role = await this.roleSvc.getRoleByName('user');
+          if(role)  {
+            data.roles = [role];
+          }  
+        }
+        const user = this.userRepo.create(data);
+        await this.userRepo.save<User>(user);
         return {
           status: HttpStatus.OK,
           message: 'User registered successfully',

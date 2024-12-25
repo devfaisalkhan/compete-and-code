@@ -13,6 +13,8 @@ import { AuthGuard } from './guards/auth.guard';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RoleService } from 'src/role/role.service';
+import { Role } from 'src/role/entities/role.entity';
 
 @Module({
   imports: [
@@ -25,12 +27,13 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
         signOptions: { expiresIn: AppConstant.DEFAULT_JWT_ACCESS_TOKEN_EXPIRATION },
       }),
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Role]),
   ],
   controllers: [AuthController],
   providers: [
     AuthService, 
     UserService,
+    RoleService,
     LocalStrategy,
     JwtStrategy,
     {
@@ -42,7 +45,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
       useClass: JwtAuthGuard,
     }
   ],
-  exports: [AuthService, JwtModule]
+  exports: [AuthService, JwtModule, RoleService]
 })
 export class AuthModule {
   

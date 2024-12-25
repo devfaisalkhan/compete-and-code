@@ -10,7 +10,8 @@ export const roleGuard: CanActivateFn = (route, state) => {
     router.navigate(['/access-denied'])
     return false;
   }
-  const isAdmin = user.roles.map((role: IRole) => role.name.includes('admin'));
+  
+  const isAdmin = user.roles.filter((role: IRole) => role.name === 'admin').length > 0;
   
   if (isAdmin) {
     return true;

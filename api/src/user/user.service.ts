@@ -19,13 +19,14 @@ export class UserService {
 
   async getUserByEmail(email): Promise<any> {
     const user = await this.userRepo.findOne({
-      where: { email },
+      where: { email: email },
       relations: ['roles']
     });
     
     if (!user) {
       return null;
     }
+
     return user;
   }
 

@@ -1,7 +1,8 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength, IsBoolean } from 'class-validator';
-import { IRole } from '../user.model';
+import { IsNotEmpty, IsString, IsEmail, IsOptional, IsBoolean } from "class-validator";
+import { IRole } from "../user.model";
+import { Role } from "src/role/entities/role.entity";
 
-export class RegisterUserDto {
+export class CreateUserDto {
   @IsNotEmpty({ message: 'Name is required' })
   @IsString({ message: 'Name must be a string' })
   name: string;
@@ -14,9 +15,12 @@ export class RegisterUserDto {
   password: string;
 
   @IsOptional()
-  roles?: IRole;
+  roles?: Role[]; 
 
   @IsOptional()
   @IsBoolean({ message: 'isActive must be a boolean value' })
   isActive?: boolean;
 }
+
+
+

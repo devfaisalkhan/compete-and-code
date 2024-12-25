@@ -32,21 +32,29 @@ export class SeedDataMiddleware implements NestMiddleware {
           EPermission.DELETE,
         ], 
       };
+      const userRole: IRole = {
+        name: 'user',
+        description: 'User role with limited access to the system',
+        permissions: [
+          EPermission.CREATE
+        ], 
+      };
 
       await this.roleSvc.create(adminRole);
+      await this.roleSvc.create(userRole);
+
     }
 
     // Fetch roles after seeding
-    const roles = await this.roleSvc.findAndCount();
-    const [roleEntities, totalRoles] = roles;
-
-    if (totalRoles === 1 && usersCount === 0) {
+    const [roleEntities, totalRoles] = await this.roleSvc.findAndCount();
+    
+    if (usersCount === 0) {
       const role = roleEntities[0]; 
       await this.authSvc.register({
         email: 'dev.faisalK@gmail.com',
         name: 'faisal khan',
         password: 'password',
-        roles: [role], 
+        roles: [role]
       });
     }
 

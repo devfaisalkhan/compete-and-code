@@ -30,7 +30,6 @@ export class RegisterComponent {
       name: ['testing', Validators.required],
       email: ['testing@1.com', [Validators.required, Validators.email]],
       password: [this.generateRandomPassword(), Validators.required],
-      roles: ['', Validators.required]
     });
   }
 
