@@ -2,6 +2,9 @@
 /dist
 /node_modules
 /build
+/_uploads
+/_db
+
 
 # Logs
 logs
