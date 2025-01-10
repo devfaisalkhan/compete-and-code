@@ -47,8 +47,7 @@ export class AddUserComponent implements OnInit{
       if (this.userId) {
         const resp = await this.authSvc.getUserById(this.userId).toPromise();
         this.previewUrl = resp?.data.avatarUrl;
-        
-        this.formGroup.patchValue(resp as any)        
+        this.formGroup.patchValue(resp?.data)        
       }
     });
     await this.getRoles()
@@ -109,7 +108,10 @@ export class AddUserComponent implements OnInit{
     
     try {
       if(this.userId) {
-        const resp = await this.authSvc.update(data).toPromise();
+        const resp = await <IResponse<any>>this.authSvc.update(data).toPromise();
+        if(resp.status == HttpStatus.OK) {
+          this.helperSvc.presentAlert(resp.message, 'success')
+        } 
       } else {
         const resp = await <IResponse<any>>this.authSvc.register(data).toPromise();
         if(resp.status == HttpStatus.OK) {
