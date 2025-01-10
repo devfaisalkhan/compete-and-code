@@ -1,8 +1,7 @@
-import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { EPermission } from "src/shared/shared.model";
+import { IsString, IsOptional, IsArray, IsEnum } from 'class-validator';
+import { EPermission } from 'src/shared/shared.model';
 
 export class CreateRoleDto {
-  @IsNotEmpty()
   @IsString()
   name: string;
 
@@ -10,7 +9,8 @@ export class CreateRoleDto {
   @IsString()
   description?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsArray()
-  permissions: EPermission[];
+  @IsEnum(EPermission, { each: true })
+  permissions?: EPermission[];
 }

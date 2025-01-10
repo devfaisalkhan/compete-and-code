@@ -36,7 +36,7 @@
     </div>
     <div class="mb-3">
       <label for="role" class="form-label">Role</label>
-      <select formControlName="roles" class="form-select" id="role" required aria-placeholder="-- Select role --">
+      <select formControlName="roles" class="form-select" id="role" required >
         <option value="">-- Select role --</option>
           @for (item of roles; track $index) {
             <option [value]="item.id">{{item.name}}</option>

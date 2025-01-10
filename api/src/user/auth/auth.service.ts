@@ -1,17 +1,17 @@
-import { BadRequestException, ConflictException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EPermission, IResponse } from 'src/shared/shared.model';
+import { IResponse } from 'src/shared/shared.model';
 import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
-import * as argon from 'argon2';
-import { MailerService } from '@nestjs-modules/mailer';
 import { JwtPayload } from './types';
 import { JwtService } from '@nestjs/jwt';
 import { AppConstant } from 'src/shared/app.constant';
 import { ConfigService } from '@nestjs/config';
 import { RoleService } from 'src/role/role.service';
 import { CreateUserDto } from '../dto/create-user.dto';
+
+import * as argon from 'argon2';
 
 @Injectable()
 export class AuthService {
@@ -38,7 +38,6 @@ export class AuthService {
         emailRequired: true
       };
  
-      
       const isUserFound = await this.userSvc.getUserByEmail(data.email);
         
       if (isUserFound) {
@@ -54,17 +53,20 @@ export class AuthService {
       const hashPassword = await argon.hash(password);
       data.password = hashPassword;
 
-      if(!data.roles) {
-        const role = await this.roleSvc.getRoleByName('user');
-        if(role)  {
-          data.roles = [role];
-        }  
+      // handle roles
+      let roles: any[] = [];
+      if(!data.roles || data.roles.length === 0) {
+        const defaultRole = await this.roleSvc.getRoleByName('user');
+        if(defaultRole) {
+          roles.push(defaultRole)
+          data.roles = roles;
+        }
+      } else {
+        const role = await this.roleSvc.getRoleById(data.roles as any);
+        roles.push(role);
+        data.roles = roles;
       }
-
-      if(data.avatarUrl) {
         
-      }
-      
       const userToBeRegistered = this.userRepo.create(data);
       
       await this.userRepo.save<User>(userToBeRegistered);

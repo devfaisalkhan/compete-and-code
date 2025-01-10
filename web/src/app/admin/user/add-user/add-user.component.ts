@@ -104,20 +104,17 @@ export class AddUserComponent implements OnInit{
   }
 
   async onFormSubmitted(data: any) {
-    const loaderText = this.userId ? `Updating user` : 'Registering user';
+    const loaderText = this.userId ? `Updating user` : 'Adding user';
     this.helperSvc.presentLoader(loaderText);
-
+    
     try {
       if(this.userId) {
         const resp = await this.authSvc.update(data).toPromise();
       } else {
-        const resp = <IResponse<any>>this.authSvc.register(data).toPromise();
+        const resp = await <IResponse<any>>this.authSvc.register(data).toPromise();
         if(resp.status == HttpStatus.OK) {
           this.helperSvc.presentAlert(resp.message, 'success')
-        } else {
-          this.helperSvc.presentAlert(resp.message, 'info')
-        }
-     
+        } 
       }
     } catch (error: any) {
       const errorMessage = error.error?.message || 'An unknown error occurred';
