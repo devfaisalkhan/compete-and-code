@@ -1,10 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ComponentsWithFormsModule } from '../../components/components-with-forms.module';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
-import { HttpStatus } from '../../universal/shared.model';
-import { HelperService } from '../../universal/helper.service';
+import { HelperService } from '../../../universal/helper.service';
+import { AuthService } from '../auth.service';
+import { ComponentsWithFormsModule } from '../../../components/components-with-forms.module';
+import { HttpStatus } from '../../../universal/shared.model';
+
+declare global {
+  interface Window {
+    bootstrap: any;
+  }
+}
 
 @Component({
   selector: 'app-login',
@@ -20,7 +26,7 @@ export class LoginComponent {
     private fb: FormBuilder,
     private authSvc: AuthService,
     private helperSvc: HelperService,
-    private router: Router
+    private router: Router  
   ) {
     this.loginForm = this.fb.group({
       email: ['dev.faisalK@gmail.com', [Validators.required, Validators.email]],
@@ -28,52 +34,24 @@ export class LoginComponent {
     });
   }
 
-  // async onLogin(data: any) {
-  //   this.helperSvc.presentLoader("Logging In");
-  //   this.authSvc.login(data).subscribe(
-  //     (resp) =>  {
-  //       this.helperSvc.dismissLoader();
-
-  //       if(resp.status == HttpStatus.OK) {
-  //         await this.router.navigate(['/admin/dashboard']);
-  //       }
-  //     },
-  //     (error) => {
-  //       this.helperSvc.dismissLoader();
-
-  //       this.helperSvc.presentAlert('User not found', 'error')
-
-  //     }
-  //   ) 
-  // }
-  
   async onLogin(data: any) {
     try {
-      // Show loader
       this.helperSvc.presentLoader("Logging In");
-      // Convert the observable to a promise and await its response
       const resp = await this.authSvc.login(data).toPromise();
-  
-      // Handle the response
-      if (resp?.status === HttpStatus.OK) {
-        localStorage.setItem('user', JSON.stringify(resp.data))   
-        localStorage.setItem('access_token', resp?.access_token as any)   
-        localStorage.setItem('refresh_token', resp.refresh_token as any)   
-        
-        await this.router.navigate(['/admin/dashboard']);
 
-      } else {
-        this.helperSvc.presentAlert('User not found', 'error');
-      }
+      if (resp?.status === HttpStatus.OK) {
+        this._saveUserData(resp);
+        await this.router.navigate(['/admin/dashboard']);
+      } 
   
-      this.helperSvc.dismissLoader();
-    } catch (error) { 
+      
+    } catch (error: any) { 
+      this.helperSvc.presentAlert(error?.error.message, 'error');
+
     } finally {
       this.helperSvc.dismissLoader();
-
     }
   }
-
 
   generateRandomPassword() {
     const length = Math.floor(Math.random() * (12 - 8 + 1)) + 8;  // Random length between 8 and 12
@@ -85,6 +63,12 @@ export class LoginComponent {
     }
 
     return password;
+  }
+
+  private _saveUserData(data: any){
+    localStorage.setItem('user', JSON.stringify(data.data))   
+    localStorage.setItem('access_token', data?.access_token as any)   
+    localStorage.setItem('refresh_token', data.refresh_token as any) 
   }
   
 }

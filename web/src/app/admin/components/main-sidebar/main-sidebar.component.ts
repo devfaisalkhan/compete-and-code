@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, ViewEncapsulation } from '@angular/core';
 import { RouterLink } from '@angular/router';
 declare var $: any;
 
@@ -7,7 +7,8 @@ declare var $: any;
   standalone: true,
   imports: [RouterLink],
   templateUrl: './main-sidebar.component.html',
-  styleUrl: './main-sidebar.component.scss'
+  styleUrl: './main-sidebar.component.scss',
+  encapsulation: ViewEncapsulation.None
 })
 export class MainSidebarComponent implements AfterViewInit{
   ngAfterViewInit(): void {

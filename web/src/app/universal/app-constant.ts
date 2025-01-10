@@ -17,7 +17,7 @@ export class AppConstant {
   public static readonly DATE_FORMAT = 'yyyy-MM-dd';
   public static readonly TIME_FORMAT = 'HH:mm';
   public static readonly TIME_FORMAT_AMPM = 'hh:mm a';
-  public static readonly PAGE_SIZE = 15;
+  public static readonly PAGE_SIZE = 10;
 
   public static readonly EVENT_DB_INITIALIZED = 'event:dbInitialized';
   public static readonly EVENT_LANGUAGE_CHANGED = 'event:languageChanged';

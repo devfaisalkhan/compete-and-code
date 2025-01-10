@@ -15,7 +15,15 @@ export class AuthService  {
   }
 
   register(data: any): Observable<IResponse<any>> {
-    return this.http.post<any>(`${AppConstant.BASE_API_URL}/auth/register`, data);
+    return this.http.post<any>(`${AppConstant.BASE_API_URL}/auth/register`,data);
+  }
+
+  update(data: any): Observable<IResponse<any>> {
+    return this.http.post<any>(`${AppConstant.BASE_API_URL}/user/update`,data);
+  }
+
+  uploadFile(data: any): Observable<IResponse<any>> {
+    return this.http.post<any>(`${AppConstant.BASE_API_URL}/file-upload/upload`, data );
   }
 
   delete(data: any): Observable<IResponse<any>> {
@@ -27,18 +35,28 @@ export class AuthService  {
   }
 
   getAllUsersCount(): Observable<number> {
-
     return this.http.get<any>(`${AppConstant.BASE_API_URL}/user/getAllUsersCount`);
   }
 
-  getAllUsers(): Observable<IResponse<any>> {
-    return this.http.get<any>(`${AppConstant.BASE_API_URL}/user/getAllUsers`);
+  getAllUsers(pageNumber?: number, pageSize?: number): Observable<IResponse<any>> {
+    return this.http.get<any>(`${AppConstant.BASE_API_URL}/user/getAllUsers?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+  }
+
+  getUserById(id: string): Observable<IResponse<any>> {
+    return this.http.get<any>(`${AppConstant.BASE_API_URL}/user/${id}`);
   }
 
   getNewAccessToken(refreshToken: string): Observable<number> {
     return this.http.post<any>(`${AppConstant.BASE_API_URL}/auth/getNewAccessToken`, {refreshToken: refreshToken});
   }
 
+  sendOtp(email: string): Observable<number> {
+    return this.http.post<any>(`${AppConstant.BASE_API_URL}/otp/sendOtp`, {email});
+  }
+
+  verifyOtp(data: {otp: number, email: string}): Observable<number> {
+    return this.http.post<any>(`${AppConstant.BASE_API_URL}/otp/verifyOtp`, data);
+  }
 
   private prepareHeaders(args?: HttpParams) {
     let headers = new HttpHeaders();
