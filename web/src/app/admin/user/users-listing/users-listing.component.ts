@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../pages/auth/auth.service';
 import { HelperService } from '../../../universal/helper.service';
 import { HttpStatus } from '../../../universal/shared.model';
+import { AppConstant } from '../../../universal/app-constant';
 
 @Component({
   selector: 'app-users-listing',
@@ -15,8 +16,9 @@ import { HttpStatus } from '../../../universal/shared.model';
 export class UsersListingComponent implements OnInit {
   users: any[] = [];
   permissions: any[] = [];
-
   isCollapsed = false;
+  pageNumber = 1;
+  totalItems = 0;
   constructor(
     private authSvc: AuthService,
     private helperSvc: HelperService
@@ -24,11 +26,25 @@ export class UsersListingComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._getAllUsers();
+    this._getAllUsers(this.pageNumber, AppConstant.PAGE_SIZE);
   }
-  onUpdateUser() {
 
+  onUpdateUser() {
+    
   }
+
+  loadData(pageNum: number) {
+    console.log(pageNum);
+    
+    this.pageNumber = pageNum;
+    // if (pageNum < 1 || (this.pageNumber * AppConstant.PAGE_SIZE) >= this.totalItems) {
+    //   return;
+    // }
+
+    this._getAllUsers(this.pageNumber, AppConstant.PAGE_SIZE);
+  }
+
+
   async onDeleteUser(user: any) {
     const resp = await this.helperSvc.presentConfirmDialogue("Alert", 'Are you sure want to delete', "info" );
 
@@ -96,25 +112,20 @@ export class UsersListingComponent implements OnInit {
   //   }
   // }
 
-  private async _getAllUsers() {
-    this.authSvc.getAllUsers().subscribe(
+  private async _getAllUsers(pageNumber: number = 1, pageSize: number = 10) {
+    this.authSvc.getAllUsers(pageNumber, pageSize).subscribe(
         (resp: any) => {
           if(resp.status == HttpStatus.OK) {
             this.users = resp.data;
+            this.totalItems = resp.totalItems;  
              this.users.forEach((user: any) => {
               user.roles.forEach((role: any) => {
                 this.permissions = role.permissions;
               });
              
             });
-
-            // this.permissions.forEach((permission: any) => {
-            //   console.log(permission)
-            // })
-
             console.log(this.permissions[0]);
             
-            // this.helperSvc.presentAlert(resp.message, 'success')
           } else {
             // this.helperSvc.presentAlert(resp.message, 'info')
           }
@@ -124,7 +135,7 @@ export class UsersListingComponent implements OnInit {
           const errorMessage = error.error?.message || 'An unknown error occurred';
           // this.helperSvc.presentAlert(errorMessage , 'error')
         }
-      )
+    )
   }
 
 }

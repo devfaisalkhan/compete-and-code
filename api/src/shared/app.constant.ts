@@ -11,7 +11,6 @@ export class AppConstant {
 
   public static readonly ADMIN_EMAIL = 'dev.faisalkhan@gmail.com';
   public static readonly DEFAULT_EMAIL_USERNAME = 'dev.faisalkhan@gmail.com';
-  public static readonly DEFAULT_EMAIL_PASSWORD = 'sdrurpeoszzqnyfe';
   public static readonly DEFAULT_EMAIL_SMTP = 'smtp.gmail.com';
 
   public static readonly DEFAULT_DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';

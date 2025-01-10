@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '../pages/auth/auth.guard';
-import { roleGuard } from '../pages/auth/role.guard';
+import { authGuard } from '../pages/auth/guards/auth.guard';
+import { roleGuard } from '../pages/auth/guards/role.guard';
 
 export const ADMIN_ROUTES: Routes = [
     {
@@ -25,6 +25,11 @@ export const ADMIN_ROUTES: Routes = [
                 title: 'add-user'
             },
             {
+                path: 'update-user/:id',
+                loadComponent: () => import('./user/add-user/add-user.component').then(c => c.AddUserComponent),
+                title: 'Update user'
+            },
+            {
                 path: 'add-course',
                 loadComponent: () => import('./courses/courses.component').then(c => c.CoursesComponent),
                 title: 'add course'
@@ -40,7 +45,7 @@ export const ADMIN_ROUTES: Routes = [
                 title: 'add roles'
             },
             {
-                path: 'add-roles/:id',
+                path: 'update-role/:id',
                 loadComponent: () => import('./role/add/add.component').then(c => c.AddComponent),
                 title: 'Edit Role'
             },

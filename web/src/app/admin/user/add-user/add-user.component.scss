@@ -1,0 +1,39 @@
+.container{
+    height: 100vh;
+}
+
+.card {
+    border-radius: 12px;
+  }
+  
+  .card-header {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+  
+  .img-thumbnail {
+    max-width: 120px;
+    max-height: 120px;
+    object-fit: cover;
+  }
+  
+  .btn-outline-primary {
+    cursor: pointer;
+  }
+  
+  form .form-control, 
+  form .form-select {
+    border-radius: 6px;
+  }
+  
+  .img-thumbnail {
+    max-width: 120px;
+    max-height: 120px;
+    object-fit: cover;
+  }
+  .btn-outline-primary {
+    cursor: pointer;
+  }
+  .form-label {
+    font-weight: 600;
+  }

@@ -1,8 +1,9 @@
-import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { Base } from 'src/shared/base.entity';
 import { IRole } from '../user.model';
 import { Exclude } from 'class-transformer';
 import { Role } from 'src/role/entities/role.entity';
+import { Otp } from '../otp/entities/otp.entity';
 
 @Entity()
 export class User extends Base {
@@ -22,4 +23,13 @@ export class User extends Base {
 
   @Column({ default: true }) 
   isActive: boolean;
+
+  @Column({ default: false })
+  isVerified: boolean;
+
+  @OneToMany(() => Otp, (otp) => otp.user, { cascade: true })
+  otps: Otp[];
+
+  @Column({nullable: true})
+  avatarUrl: string;
 }

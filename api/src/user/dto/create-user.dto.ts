@@ -20,6 +20,13 @@ export class CreateUserDto {
   @IsOptional()
   @IsBoolean({ message: 'isActive must be a boolean value' })
   isActive?: boolean;
+
+  @IsOptional()
+  @IsBoolean({ message: 'isVerified must be a boolean value' })
+  isVerified?: boolean;
+
+  @IsOptional()
+  avatarUrl?: string;
 }
 
 

@@ -18,7 +18,7 @@
            <td>
             <span class="badge badge-light permissions" *ngFor="let permission of role.permissions">{{ permission }}</span>
           <td>
-            <a [routerLink]="['/admin/add-roles', role.id]" class="btn btn-warning btn-sm">Edit</a>
+            <a [routerLink]="['/admin/update-role', role.id]" class="btn btn-warning btn-sm">Edit</a>
             <button class="btn btn-danger btn-sm" >Delete</button>
           </td>
         </tr>

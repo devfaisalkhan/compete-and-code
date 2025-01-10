@@ -1,34 +1,52 @@
 <div class="container mt-5">
-    <h2 class="text-center mb-4">{{ isUpdate ? 'Update User' : 'Add User' }}</h2>
-    <form [formGroup]="formGroup" (ngSubmit)="onFormSubmitted(formGroup.value)">
-      <div class="mb-3">
-        <label for="username" class="form-label">Name</label>
-        <input formControlName="name" type="text" class="form-control" id="name" placeholder="Enter Name" required>
+  <h2 class="text-center mb-4">{{ userId ? 'Update User' : 'Add User' }}</h2>
+  <form [formGroup]="formGroup" (ngSubmit)="onFormSubmitted(formGroup.value)">
+    <!-- Profile Picture Upload Section -->
+    <div class="text-center mb-4">
+      <img 
+        [src]="previewUrl || 'images/default-avatar.svg'" 
+        alt="Profile Preview" 
+        class="rounded-circle border img-thumbnail" 
+        style="width: 120px; height: 120px;"
+      >
+      <div class="mt-2">
+        <label for="avatar" class="form-label btn btn-outline-primary btn-sm">
+          Upload Picture
+          <input 
+            type="file" 
+            id="avatar" 
+            class="d-none" 
+            (change)="onFileSelected($event)"
+          >
+        </label>
       </div>
-      <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input formControlName="email" type="email" class="form-control" id="email" placeholder="Enter email" required>
-      </div>
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input formControlName="password" type="password" class="form-control" id="password" placeholder="Enter password" [required]="!isUpdate">
-      </div>
-      <div class="mb-3">
-        <label for="role" class="form-label">Role</label>
-        <select formControlName="roles" class="form-select" id="role" required>
-          <option value="">Select role</option>
-          <option value="admin">Admin</option>
-          <option value="editor">Editor</option>
-          <option value="viewer">Viewer</option>
-          <option value="teacher">Teacher</option>
+    </div>
 
-        </select>
-      </div>
-      <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="terms" [required]="!isUpdate">
-        <label class="form-check-label" for="terms">I agree to the terms and conditions</label>
-      </div>
-      <button type="submit" class="btn btn-primary">{{ isUpdate ? 'Update' : 'Submit' }}</button>
-    </form>
-  </div>
-  
+    <div class="mb-3">
+      <label for="username" class="form-label">Name</label>
+      <input formControlName="name" type="text" class="form-control" id="name" placeholder="Enter Name" required>
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input formControlName="email" type="email" class="form-control" id="email" placeholder="Enter email" required>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input formControlName="password" type="password" class="form-control" id="password" placeholder="Enter password" [required]="!isUpdate">
+    </div>
+    <div class="mb-3">
+      <label for="role" class="form-label">Role</label>
+      <select formControlName="roles" class="form-select" id="role" required aria-placeholder="-- Select role --">
+        <option value="">-- Select role --</option>
+          @for (item of roles; track $index) {
+            <option [value]="item.id">{{item.name}}</option>
+          }
+      </select>
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="terms" [required]="!isUpdate">
+      <label class="form-check-label" for="terms">I agree to the terms and conditions</label>
+    </div>
+    <button type="submit" class="btn btn-primary">{{ userId ? 'Update' : 'Submit' }}</button>
+  </form>
+</div>

@@ -11,6 +11,12 @@ import appConfig from './shared/config/app.config';
 import { AuthModule } from './user/auth/auth.module';
 import { JwtStrategy } from './user/auth/strategies/jwt.strategy';
 import { RoleModule } from './role/role.module';
+import { OtpModule } from './user/otp/otp.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { FileUploadModule } from './file-upload/file-upload.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
 const CONNECTION_NAME = 'default';
 
 @Module({
@@ -40,18 +46,20 @@ const CONNECTION_NAME = 'default';
         },
       },
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '_uploads'), // Point to the uploads directory
+      serveRoot: '/uploads', // Serve files under the /uploads path
+    }),
     UserModule,
     AuthModule,
     CoursesModule,
     RoleModule,
+    OtpModule,
+    FileUploadModule
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthGuard,
-    // },
     JwtStrategy
   ],
 })

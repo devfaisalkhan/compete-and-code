@@ -45,9 +45,8 @@ import { Role } from 'src/role/entities/role.entity';
       useClass: JwtAuthGuard,
     }
   ],
-  exports: [AuthService, JwtModule, RoleService]
+  exports: [AuthService, RoleService]
 })
 export class AuthModule {
-  
     
 }

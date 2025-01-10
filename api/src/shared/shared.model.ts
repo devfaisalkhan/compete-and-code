@@ -2,6 +2,7 @@ export interface IResponse<T> {
   data?: T;
   status?;
   message?;
+  totalItems?;
   access_token?
   refresh_token?
 }

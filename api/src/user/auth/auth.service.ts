@@ -18,44 +18,62 @@ export class AuthService {
     constructor(
       @InjectRepository(User)
       private userRepo: Repository<User>,
+
       private userSvc: UserService,
-      private readonly mailService: MailerService,
       private jwtService: JwtService,
       private configSvc: ConfigService,
       private roleSvc: RoleService
-
     ) {
         
     }
 
     async register(data: CreateUserDto): Promise<IResponse<any>> {
-        const isUserFound = await this.userSvc.getUserByEmail(data.email);
-          
-        if (isUserFound) {
-          throw new ConflictException({
-            alreadyExist: HttpStatus.CONFLICT,
-            message: 'User already exists.'
-          });
-        }
+      let result = {
+        userStatus: null,
+        alreadyExist: false,
+        alreadyRegisteredWithNormalAuth: false,
+        mobileRequired: false,
+        mobileVerified: false,
+        emailVerified: false, 
+        emailRequired: true
+      };
+ 
+      
+      const isUserFound = await this.userSvc.getUserByEmail(data.email);
         
-        let password = data.password;
-        password = password.toString();
-    
-        const hashPassword = await argon.hash(password);
-        data.password = hashPassword;
+      if (isUserFound) {
+        throw new ConflictException({
+          alreadyExist: HttpStatus.CONFLICT,
+          message: 'User already exists.'
+        });
+      }
+      
+      let password = data.password;
+      password = password.toString();
+  
+      const hashPassword = await argon.hash(password);
+      data.password = hashPassword;
 
-        if(!data.roles) {
-          const role = await this.roleSvc.getRoleByName('user');
-          if(role)  {
-            data.roles = [role];
-          }  
-        }
-        const user = this.userRepo.create(data);
-        await this.userRepo.save<User>(user);
-        return {
-          status: HttpStatus.OK,
-          message: 'User registered successfully',
-        };
+      if(!data.roles) {
+        const role = await this.roleSvc.getRoleByName('user');
+        if(role)  {
+          data.roles = [role];
+        }  
+      }
+
+      if(data.avatarUrl) {
+        
+      }
+      
+      const userToBeRegistered = this.userRepo.create(data);
+      
+      await this.userRepo.save<User>(userToBeRegistered);
+
+      return {
+        status: HttpStatus.OK,
+        message: 'User registered successfully',
+        data: result
+      };
     }
     
     async login(params: any): Promise<IResponse<any>> {
@@ -69,25 +87,6 @@ export class AuthService {
         refresh_token: await this.generateRefreshToken(payLoad),
         data: params,
         status: HttpStatus.OK,
-      };
-    }
-
-    async delete(data): Promise<IResponse<any>> {
-      const user = await this.userRepo.findOne({where: {id: data.id}});
-      
-      if(!user) {
-        throw new NotFoundException();
-      }
-
-      const resp = await this.userRepo.delete({id: data.id});
-    
-      if(resp.affected === 0) {
-        throw new BadRequestException();
-      } 
-
-      return {
-        status: HttpStatus.OK,
-        message: 'User Deleted successfully',
       };
     }
 
@@ -142,27 +141,4 @@ export class AuthService {
       });
     }
 
-    
-    async _sendMail(to, subject, template?, context?) {
-        let result: {
-          response;
-          messageId;
-          accepted: string[];
-          rejected: string[];
-          envelopeTime;
-          messageTime;
-        };
-        try {
-          result = await  this.mailService.sendMail({
-            from: process.env.EMAIL_FROM,
-            to: 'dev.faisalk@gmail.com',
-            subject: `Email from ${process.env.APP_NAME}`,
-            text: 'message',
-          });
-        } catch (e) {
-          throw e;
-        }
-    
-        return result;
-      }
 }
