@@ -49,26 +49,28 @@ export class AuthService {
       
       let password = data.password;
       password = password.toString();
-  
       const hashPassword = await argon.hash(password);
       data.password = hashPassword;
 
+      const users = await this.userSvc.getAllUsersCount();
+
       // handle roles
       let roles: any[] = [];
-      if(!data.roles || data.roles.length === 0) {
-        const defaultRole = await this.roleSvc.getRoleByName('user');
-        if(defaultRole) {
-          roles.push(defaultRole)
+      if(users !== 0) {
+        if(!data.roles || data.roles.length === 0) {
+          const defaultRole = await this.roleSvc.getRoleByName('user');
+          if(defaultRole) {
+            roles.push(defaultRole)
+            data.roles = roles;
+          }
+        } else {
+          const role = await this.roleSvc.getRoleById(data.roles as any);
+          roles.push(role);
           data.roles = roles;
         }
-      } else {
-        const role = await this.roleSvc.getRoleById(data.roles as any);
-        roles.push(role);
-        data.roles = roles;
-      }
-        
+      } 
+
       const userToBeRegistered = this.userRepo.create(data);
-      
       await this.userRepo.save<User>(userToBeRegistered);
 
       return {
@@ -102,7 +104,7 @@ export class AuthService {
       const match = await argon.verify(user.password, args.password);
       
       if (!match) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException('Invalid password');
       }
 
       return user;

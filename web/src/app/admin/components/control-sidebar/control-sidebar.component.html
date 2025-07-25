@@ -11,9 +11,11 @@
             <h5>Customize Admin panel</h5>
             <hr class="mb-2">
             <div class="mb-4">
-              <input type="checkbox" value="1" class="mr-1"><span>Dark Mode</span>
+              <input type="checkbox"  [(ngModel)]="isDarkMode" 
+              (ngModelChange)="onDarkModeToggle()"  class="mr-1"><span>Dark Mode</span>
             </div>
-      
+            <!-- {{isDarkMode}} -->
+
             <!-- Header Options -->
             <h6>Header Options</h6>
             <div class="mb-1">

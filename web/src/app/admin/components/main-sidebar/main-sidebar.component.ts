@@ -12,8 +12,8 @@ declare var $: any;
 })
 export class MainSidebarComponent implements AfterViewInit{
   ngAfterViewInit(): void {
-    $(document).ready(function () {
+    setTimeout(() => {
       $('[data-widget="treeview"]').Treeview('init');
-    });
+    }, 0);
   }
 }

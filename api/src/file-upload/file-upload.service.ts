@@ -9,7 +9,7 @@ export class FileUploadService {
   async handleFileUpload(imgUrl: string): Promise<IResponse<any>> {
     return {
       status: HttpStatus.OK,
-      message: 'User registered successfully',
+      message: 'Image uploaded successfully',
       data: imgUrl
     };
   }

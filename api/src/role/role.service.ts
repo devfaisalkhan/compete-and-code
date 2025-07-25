@@ -45,6 +45,20 @@ export class RoleService {
     };
   }
 
+  async getAllRolesAndCount(): Promise<IResponse<any>> {
+    const [roles, count] = await this.roleRepo.findAndCount();
+    
+    if(!roles) {
+      throw new NotFoundException('Roles not found');
+    }
+
+    return {
+      data: roles,
+      status: HttpStatus.OK,
+      totalItems: count
+    };
+  }
+
   getRoleById(id: UUID) {
     const role = this.roleRepo.findOne({where: {id: id}});
     if(!role) {

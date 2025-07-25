@@ -31,7 +31,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
+           "styles": [
               "src/styles.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/sweetalert2/dist/sweetalert2.min.css",
@@ -42,18 +42,15 @@
               "node_modules/admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css"
             ],
             "scripts": [
-              "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "node_modules/admin-lte/plugins/jquery/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "node_modules/admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js",
               "node_modules/admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js",
               "node_modules/admin-lte/dist/js/adminlte.js",
               "node_modules/admin-lte/plugins/jquery-mousewheel/jquery.mousewheel.js",
-              "node_modules/admin-lte/plugins/raphael/raphael.min.js",
-              "node_modules/admin-lte/plugins/jquery-mapael/jquery.mapael.min.js",
-              "node_modules/admin-lte/plugins/jquery-mapael/maps/usa_states.min.js",
               "node_modules/admin-lte/plugins/chart.js/Chart.min.js",
-              "node_modules/sweetalert2/dist/sweetalert2.min.js",
-              "node_modules/admin-lte/plugins/select2/js/select2.full.min.js"
+              "node_modules/admin-lte/plugins/select2/js/select2.full.min.js",
+              "node_modules/sweetalert2/dist/sweetalert2.min.js"
             ]
           },
           "configurations": {

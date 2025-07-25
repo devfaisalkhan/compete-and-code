@@ -30,7 +30,6 @@ export class AddUserComponent implements OnInit{
     private authSvc: AuthService,
     private roleSvc: RolesService,
     private route: ActivatedRoute,
-    
   ) {
     this.formGroup = this.fb.group({
       email: ['dev.faisalK@gmail.com', [Validators.required, Validators.email]],
@@ -59,15 +58,13 @@ export class AddUserComponent implements OnInit{
     if (fileInput.files && fileInput.files.length > 0) {
       this.selectedFile = fileInput.files[0];
   
-      // Validate file type
       if (!this.selectedFile.type.startsWith('image/')) {
-        console.error('Selected file is not an image.');
+        this.helperSvc.presentAlert('Selected file is not an image.', 'info');
         return;
       }
   
-      // Validate file size (example: 5MB)
       if (this.selectedFile.size > 5 * 1024 * 1024) {
-        console.error('File size exceeds 5MB limit.');
+        this.helperSvc.presentAlert('File size exceeds 5MB limit.', 'info');
         return;
       }
   
@@ -77,11 +74,10 @@ export class AddUserComponent implements OnInit{
         this.previewUrl = e.target?.result as string;
       };
       reader.onerror = (err) => {
-        console.error('Error reading file:', err);
+        this.helperSvc.presentAlert('Error reading file', 'info');
       };
       reader.readAsDataURL(this.selectedFile);
   
-      // Upload file
       try {
         const fd = new FormData();
         fd.append('file', this.selectedFile)

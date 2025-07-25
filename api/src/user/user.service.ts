@@ -91,13 +91,12 @@ export class UserService {
 
   async update(data: UpdateUserDto): Promise<IResponse<any>> {
     const user = await this.getUserByEmail(data.email);    
-
+    
     if(!user) {
       throw new NotFoundException('user not found');
     }
 
     const {roles, ...updateUser} = data;
-    console.log(updateUser);
     
     const result = await this.userRepo.update({ email: data.email }, updateUser);
 

@@ -24,19 +24,19 @@
 
     <div class="mb-3">
       <label for="username" class="form-label">Name</label>
-      <input formControlName="name" type="text" class="form-control" id="name" placeholder="Enter Name" required>
+      <input formControlName="name" type="text" class="form-control" id="name" placeholder="Thomas Edison" required>
     </div>
     <div class="mb-3">
       <label for="email" class="form-label">Email</label>
-      <input formControlName="email" type="email" class="form-control" id="email" placeholder="Enter email" required>
+      <input formControlName="email" type="email" class="form-control" id="email" placeholder="hello@example.com" required>
     </div>
     <div class="mb-3">
       <label for="password" class="form-label">Password</label>
-      <input formControlName="password" type="password" class="form-control" id="password" placeholder="Enter password" [required]="!isUpdate">
+      <input formControlName="password" type="password" class="form-control" id="password" placeholder="MyPassword" [required]="!isUpdate">
     </div>
     <div class="mb-3">
       <label for="role" class="form-label">Role</label>
-      <select formControlName="roles" class="form-select" id="role" required >
+      <select formControlName="roles" class="form-select" id="role" required aria-placeholder="-- Select role --">
         <option value="">-- Select role --</option>
           @for (item of roles; track $index) {
             <option [value]="item.id">{{item.name}}</option>

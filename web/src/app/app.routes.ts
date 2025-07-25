@@ -25,4 +25,8 @@ export const routes: Routes = [
         path: 'access-denied',
         loadComponent: () => import('./access-denied/access-denied.component').then(c => c.AccessDeniedComponent),
     },
+    {
+        path: '**',
+        loadComponent: () => import('./page-not-found/page-not-found.component').then(c => c.PageNotFoundComponent),
+    },
 ];

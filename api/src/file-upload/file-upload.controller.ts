@@ -6,15 +6,23 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Allow } from 'class-validator';
 import { Public } from 'src/user/auth/decorators/public.decorator';
 import { CurrentUser } from 'src/user/auth/decorators/user.decorator';
+import { IsImage } from 'src/user/auth/decorators/is-image.decorator';
 
 @Controller('file-upload')
 @Public()
 export class FileUploadController {
   constructor(private readonly fileUploadSvc: FileUploadService) {}
 
+  // @Post('upload')
+  // @UseInterceptors(FileInterceptor('file'))
+  // uploadFile(@UploadedFile() file: Express.Multer.File, @Req() req: any) {
+  //   const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${file.filename}`;
+  //   return this.fileUploadSvc.handleFileUpload(fileUrl);
+  // }
+
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  uploadFile(@UploadedFile() file: Express.Multer.File, @Req() req: any) {
+  uploadFile(@IsImage() file: Express.Multer.File, @Req() req: any) {
     const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${file.filename}`;
     return this.fileUploadSvc.handleFileUpload(fileUrl);
   }
